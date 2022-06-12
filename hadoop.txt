@@ -1,0 +1,1263 @@
+
+pbrun -h gobrsr000001331 bash
+
+Vastool flush
+
+Hive usage from command line:
+============================================================================================================================================
+
+root@tbrder000002188 DEV # beeline
+
+beeline> !connect jdbc:hive2://tbrder10470.intranet.comcapint.com:10000/default;principal=hive/tbrder10470.intranet.comcapint.com@INTRANET.comcapINT.COM
+
+scan complete in 3ms
+
+Connecting to jdbc:hive2://tbrder10470.intranet.comcapint.com:10000/default;principal=hive/tbrder10470.intranet.comcapint.com@INTRANET.comcapINT.COM
+
+Enter username for jdbc:hive2://tbrder10470.intranet.comcapint.com:10000/default;principal=hive/tbrder10470.intranet.comcapint.com@INTRANET.comcapINT.COM:LEAVE IT BLANK
+
+Enter password for jdbc:hive2://tbrder10470.intranet.comcapint.com:10000/default;principal=hive/tbrder10470.intranet.comcapint.com@INTRANET.comcapINT.COM:LEAVE IT BLANK
+
+Connected to: Apache Hive (version 0.12.0-cdh5.1.3)
+
+Driver: Hive JDBC (version 0.12.0-cdh5.1.3)
+
+Transaction isolation: TRANSACTION_REPEATABLE_READ
+
+0: jdbc:hive2://tbrder10470.intranet.comcapin> show databases;
+
++----------------+
+
+| database_name  |
+
++----------------+
+
+| default        |
+
+| testdb_dev     |
+
+| testdb_oat     |
+
+| testdb_sit     |
+
+| testdb_uat     |
+
+ 
+ 
+
+0: jdbc:hive2://tbrder10470.intranet.comcapin> show tables;
+
++----------------------------+
+
+|          tab_name          |
+
++----------------------------+
+
+| foo                        |
+
+| students                   |
+
+| twitterexampletextexample  |
+
++----------------------------+
+
+3 rows selected (0.356 seconds)
+
+Importing a file into Hive	
+Once you have a file loaded into HDFS it is possible to create a Hive table which points to the file directly using the “create external table” command (no need to copy data into a separate Hive table). See below example:
+create database db1;
+USE db1;
+CREATE EXTERNAL TABLE IF NOT EXISTS h_nation
+(
+  n_nationkey INT,
+  n_name STRING,
+  n_regionkey INT,
+  n_comment STRING
+)
+ROW FORMAT delimited fields terminated by ','
+STORED AS TEXTFILE
+LOCATION '/user/joachima/hive/h_nation';
+
+create table Alok_test2 as select * from nirakar_test;
+
+( insert from local/insert from query not possible-- version 0.13, possible in 0.14 onwards)
+
+External table :
+create external table defect18(id int, name string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/dev/nathalok/defect18table';
+
+-bash-4.1$ cat defect18.txt
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+18,defect18
+
+
+hadoop fs -copyFromLocal defect18.txt /dev/nathalok/
+
+LOAD DATA INPATH 'hdfs:///dev/nathalok/defect18.txt' INTO TABLE defect18;
+
+
+
+
+
+ 
+==============================================================================================================================
+ 
+
+2. Impala usage from command line: impala-shell -k -s impala -d YOUR_INTRANET_ACCOUNT
+
+root@tbrder000002188 DEV # impala-shell -k -s impala -d klimavia
+
+[Not connected] > connect tbrder10465.intranet.comcapint.com:21000;
+
+-bash-4.1$  hadoop fs -ls hdfs://tbrder10470.intranet.comcapint.com/user/nathalok
+
+kinit
+kinit -R
+klist
+
+
+LOAD DATA INPATH 'hdfs//tbrder10470.intranet.comcapint.com/user/nathalok/hive1.txt' OVERWRITE INTO TABLE twitterexampletextexample;
+ 
+LOAD DATA INPATH '/user/nathalok/hive1.txt' OVERWRITE INTO TABLE twitterexampletextexample;
+
+
+LOAD DATA INPATH '/DEV/hive1.txt' INTO TABLE twitterexampletextexample;
+
+hadoop fs -cp hdfs://tbrder10471.intranet.comcapint.com/user/nathalok/hive1.txt hdfs://tbrder10471.intranet.comcapint.com/DEV/
+
+hadoop fs -cp hdfs://tbrder10470.intranet.comcapint.com/user/nathalok/hive1.txt hdfs://tbrder10470.intranet.comcapint.com/DEV/
+
+
+
+external table:
+impala-shell -k -s impala
+connect tbrder10465.intranet.comcapint.com:21000;
+
+create external table impala18ext(id int, name string)
+row format delimited
+fields terminated by ','
+stored as textfile
+location '/dev/nathalok/impext/';
+
+insert into table impala18ext values(18,'notdefcet');
+
+
+
+==============================================================================================================================
+Sqoop:
+
+This tool has been designed to transfer data between Hadoop and relational databases.
+
+ 
+
+Verification Test 
+
+From a command line or Putty run the below commands ensuring that the data is insensitive and meets Data Policy requirements. 
+
+*You must update the <hostserver>, <database>, <username>, <password> and <tablename> before executing.
+
+ 
+
+sqoop import \
+
+--connect jdbc:teradata://<hostserver>/<database> \
+
+--username <username> --password <password> \
+
+--fields-terminated-by '\t' \
+
+--table <tablename>
+
+ 
+
+To then test the file exits on HDFS, run the following command:
+
+hdfs dfs -ls <tablename>
+
+ 
+
+To view some of the data:
+
+hdfs dfs -tail <tablename>/part-m-00000
+
+ 
+
+To clear data after tests are complete, run the command:
+
+hdfs dfs -rm -r <tablename>
+
+eg.
+sqoop import --connect jdbc:teradata://dwsoat.dws.companys.co.uk/database=TS_72258_BASELDB  --table rupesh_cdc --target-dir hdfs://tbrder10471.intranet.comcapint.com/dev/nathalok --username E20020663 -P
+
+
+-bash-4.1$ hadoop fs -cat hdfs://tbrder10471.intranet.comcapint.com/dev/nath*/*
+E20019548,Tushar,UKRB,WARJE,2011-01-14
+E20019547,Om,SHAMROCK,STATUE,2011-01-15
+E20019546,Rupesh,BCARD,KOTHRUD,2011-01-12
+-bash-4.1$
+
+(sqoop import --connect jdbc:teradata://dwsoat.dws.companys.co.uk/DATABASE=TS_72258_BASELDB --table sample_alok --target-dir /dev/nathalok/sample_alok --username E20020663 -P
+With primary index: 
+sqoop import --connect jdbc:teradata://dwsoat.dws.companys.co.uk/DATABASE=TS_72258_BASELDB --table sample_alok --target-dir /dev/nathalok/sample_alok --username E20020663 -P
+No primary Index
+sqoop import --connect jdbc:teradata://dwsoat.dws.companys.co.uk/DATABASE=TS_72258_BASELDB --table sample_alok --split-by sample_alok.id --target-dir /dev/nathalok/sample_alok --username E20020663 -P
+-bash-4.1$ hadoop fs -cat  /dev/nathalok/sample_alok/*
+323,NAME3
+323,NAME2
+323,NAME4
+hadoop fs -getmerge /dev/nathalok/sample_alok ./sample_alok
+hadoop fs -copyFromLocal sample_alok1 /dev/nathalok/
+sqoop export --connect jdbc:teradata://dwsoat.dws.companys.co.uk/DATABASE=TS_72258_BASELDB --table sample_alok --export-dir /dev/nathalok/sample_alok1 --username E20020663 -P
+
+sqoop list-databases --connect jdbc:teradata://dwsoat.dws.companys.co.uk --username $user -password $pass
+
+sqoop (configuration)
+
+Ref Link- http://www.cloudera.com/content/cloudera/en/documentation/connectors/latest/Teradata/Cloudera-Connector-for-Teradata/cctd_topic_3.html?scroll=concept_kv1_cj2_4n_unique_1
+
+1)    Install the Sqoop connector by opening the distribution archive in a convenient location such as /usr/lib. Put sqoop-connector-teradata-1.2c5 in it.
+2)    Copy the Teradata JDBC drivers (terajdbc4.jar and tdgssconfig.jar) to the lib directory of Sqoop installation.
+3)    Confirm that the managers.d directory exists in the Sqoop configuration directory.
+4)    Create a text file in the managers.d directory with a descriptive name such as cldra_td_connector.
+5)    The cldra_td_connector file must have the connector class name followed by the complete path to the directory where the connector jar is located.
+com.cloudera.connector.teradata.TeradataManagerFactory = /usr/lib/sqoop-connector-teradata-1.2c5
+6)    Add following to sqoop-site.xml
+
+<configuration>
+  <property>
+    <name>sqoop.connection.factories</name>
+    <value>com.cloudera.sqoop.manager.TeradataManagerFactory</value>
+  </property>
+</configuration>
+
+for sbp:
+export HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop
+export HIVE_HOME=/opt/cloudera/parcels/CDH/lib/hive
+export  LIB_JARS=$HIVE_HOME/lib/hive-metastore-0.12.0-cdh5.1.0.jar,$HIVE_HOME/lib/libthrift-0.9.0.cloudera.2.jar,$HIVE_HOME/lib/hive-exec-0.12.0-cdh5.1.0.jar,$HIVE_HOME/lib/libfb303-0.9.0.jar,$HIVE_HOME/lib/jdo-api-3.0.1.jar,$HIVE_HOME/lib/slf4j-api-1.7.5.jar,$HIVE_HOME/lib/hive-cli-0.12.0-cdh5.1.0.jar,/usr/lib/hadoop/lib/teradata-connector-1.2.1.jar,/home/sbpanalytics/jars/terajdbc4.jar,/home/sbpanalytics/teradata-jdbc4-14.00.00.04.jar,/home/sbpanalytics/tdgssconfig.jar
+export HADOOP_CLASSPATH=${HIVE_HOME}/lib/*:/usr/lib/hadoop/lib/teradata-connector-1.2.1.jar:/usr/lib/hadoop/lib/teradata-connector-1.2.1.jar:/home/sbpanalytics/teradata-jdbc4-14.00.00.04.jar:/home/sbpanalytics/tdgssconfig.jar
+
+#SQOOP QUERY - BIW_ACC_TRANSLATION
+#==============================================
+sqoop import -libjars /home/sbpanalytics/tdgssconfig.jar,/home/sbpanalytics/terajdbc4.jar --driver com.teradata.jdbc.TeraDriver --connect "jdbc:teradata://dwsoat.dws.companys.co.uk/database=TS_75739_E_CLOUDITDB"  -m 1 --username G01636931 --password Mumbai01# --query "SELECT MI_ACC_IDR, SRT_CDE || CUS_ACC_NUM, ATA_SPT_MGE, IDR_STA_DTE, IDR_END_DTE, DW_LOD_TMP, DW_UPD_LOD_TMP FROM TEHBALT where \$CONDITIONS;" --target-dir hdfs://nameservice1/user/sbpanalytics/sbp_2_sit/tables/BIW_ACC_TRANSLATION  -fields-terminated-by '\001'
+
+
+===================================================================================================================================
+Hbase --( Descoped)
+
+hbase shell
+create 'test1', 'cf' 
+hbase> create 'test1', 'cf'    
+hbase> list 
+hbase> put 'test', 'row1', 'cf:a', 'value1'
+hbase> put 'test', 'row2', 'cf:b', 'value2'
+hbase> put 'test', 'row3', 'cf:c', 'value3'
+hbase> scan 'test'
+hbase> get 'test', 'row1'
+hbase> disable 'test'
+hbase> drop 'test'
+
+====================================================================================================================================== 
+
+PIG
+
+fs -mkdir /tmp
+fs -copyFromLocal file-x file-y
+fs -ls file-y
+
+sh ls
+pig -x local
+
+grunt> A = LOAD 'data.txt' USING PigStorage() AS (f1:chararray, f2:chararray, f3:float);
+grunt> B = GROUP A BY f1;
+grunt> C = FOREACH B GENERATE COUNT ($0);
+grunt> DUMP C;
+
+
+grunt> cat myscript.pig
+a = LOAD 'student.txt' USING PigStorage() AS (name, age, gpa);
+b = LIMIT a 3;
+DUMP b;
+
+grunt> exec myscript.pig
+(alice,20,2.47)
+(luke,18,4.00)
+(holly,24,3.27)
+
+eg.
+
+/* Read file and store results in A */
+A = load '/home/nathalok/data.txt';
+/* Loop for each line in A and break it down to words and store in B */
+B = foreach A generate flatten(TOKENIZE((chararray)$0)) as word;
+/* Group same words in B and store in C */
+C = group B by word;
+/* Count number of occurences for each word group in C and store in D */
+D = foreach C generate COUNT(B), group;
+/* Output the results to pig-wordcount-out directory */
+store D into './pig-wordcount-out';
+
+
+eg.
+When you are trying use pig – file must be on the HDFS:
+
+A = LOAD '/user/nathalok/student.txt' USING PigStorage() AS (name:chararray, age:int,gpa:float);
+B = FOREACH A GENERATE name;
+DUMP B;
+
+
+HADOOP_CONF_DIR=/random/path/that/must/not/exist pig -x local
+
+for local mode resolution
+I have tested this on CDH 5.2 and I can indeed reproduce the error you are seeing. Setting the HADOOP_CONF_DIR to a non-existent location should mean that it does not pick up the Kerberos configuration from the client configuration and this workaround worked on previous versions of CDH.
+
+There is another option which is to create a new client configuration with Kerberos explicitly disabled.
+
+1. Copy the Hadoop client configuration to a new directory cp -a /etc/hadoop/conf/ $HOME
+
+2. In conf/core-site.xml change the value of hadoop.security.authentication from kerberos to simple
+
+  <property>
+    <name>hadoop.security.authentication</name>
+    <value>simple</value>
+  </property>
+
+3. Set HADOOP_CONF_DIR to this location
+HADOOP_CONF_DIR=$HOME/conf pig -x local
+
+I have this configuration working on my test environment, please can you try this and confirm that it is working for you.
+
+With regards to the second error you are seeing, you should only use the HADOOP_CONF_DIR workaround when you want to run Pig in local mode. Doing this means the hadoop command will not read a valid client configuration and accessing HDFS will not work until the variable HADOOP_CONF_DIR is unset.
+
+--------
+For me it is working – I tried with a user “deorerup”  and “klimavia”.  Below is my example.  Rupesh – did you did every step carefuly?
+
+ 
+
+1.       If you didn’t noticed: [deorerup]:deorerup> ls -la /etc/hadoop/
+
+total 28
+
+drwxr-xr-x    5 root root  4096 Nov 20 20:37 .
+
+drwxr-xr-x. 153 root root 12288 Nov 19 03:22 ..
+
+lrwxrwxrwx    1 root root    29 Nov 20 20:37 conf -> /etc/alternatives/hadoop-conf
+
+ 
+
+ 
+
+2.
+
+[deorerup]:deorerup> cp /etc/hadoop/conf/* conf/
+
+[deorerup]:deorerup> pwd
+
+/home/deorerup
+
+[deorerup]:deorerup> ls -la conf/
+
+total 52
+
+drwxr-xr-x 2 deorerup esmgroup      4096 Nov 21 07:23 .
+
+drwxr-x--- 9 deorerup fGLBHDPDEVLPR 4096 Nov 21 07:23 ..
+
+-rw-r--r-- 1 deorerup esmgroup      3660 Nov 21 07:23 core-site.xml
+
+-rw-r--r-- 1 deorerup esmgroup       469 Nov 21 07:23 hadoop-env.sh
+
+-rw-r--r-- 1 deorerup esmgroup      3513 Nov 21 07:23 hdfs-site.xml
+
+-rw-r--r-- 1 deorerup esmgroup       300 Nov 21 07:23 log4j.properties
+
+-rw-r--r-- 1 deorerup esmgroup      4417 Nov 21 07:23 mapred-site.xml
+
+-rw-r--r-- 1 deorerup esmgroup       315 Nov 21 07:23 ssl-client.xml
+
+-rw-r--r-- 1 deorerup esmgroup      1509 Nov 21 07:23 topology.map
+
+-rwxr-xr-x 1 deorerup esmgroup      1510 Nov 21 07:23 topology.py
+
+-rw-r--r-- 1 deorerup esmgroup      6264 Nov 21 07:23 yarn-site.xml
+
+ 
+
+3. [deorerup]:deorerup> cd conf
+
+[deorerup]:conf> vi core-site.xml
+
+ 
+
+4. [deorerup]:conf> export HADOOP_CONF_DIR=$HOME/conf
+
+ 
+
+5.
+
+[deorerup]:conf> pig -x local
+
+ls: cannot access /apps/cloudera/parcels/CDH-5.2.0-1.cdh5.2.0.p0.36/bin/../lib/hive/lib/slf4j-api-*.jar: No such file or directory
+
+2014-11-21 07:27:28,122 [main] INFO  org.apache.pig.Main - Apache Pig version 0.12.0-cdh5.2.0 (rexported) compiled Oct 11 2014, 15:46:46
+
+2014-11-21 07:27:28,123 [main] INFO  org.apache.pig.Main - Logging error messages to: /home/deorerup/conf/pig_1416554848120.log
+
+2014-11-21 07:27:28,142 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /home/deorerup/.pigbootup not found
+
+2014-11-21 07:27:28,359 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,359 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+
+2014-11-21 07:27:28,362 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: file:///
+
+2014-11-21 07:27:28,708 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:28,712 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,796 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,799 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:28,880 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,884 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:28,931 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,933 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:28,970 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:28,973 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:29,000 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:29,002 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:29,004 [main] WARN  org.apache.pig.PigServer - Empty string specified for jar path
+
+2014-11-21 07:27:29,028 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:29,030 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:29,055 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:29,057 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:29,084 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:29,086 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:27:29,113 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:27:29,115 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+grunt> A = load 'pig_inp.dat' using PigStorage(':');
+
+grunt> B = foreach A generate $0 as id;
+
+grunt> dump B;
+ 
+
+--------------------------------------------Below is with my user--------------------------
+
+ 
+
+ 
+
+-bash-4.1$ export HADOOP_CONF_DIR=$HOME/conf
+
+-bash-4.1$ pig -x local
+
+ls: cannot access /apps/cloudera/parcels/CDH-5.2.0-1.cdh5.2.0.p0.36/bin/../lib/hive/lib/slf4j-api-*.jar: No such file or directory
+
+2014-11-21 07:18:31,942 [main] INFO  org.apache.pig.Main - Apache Pig version 0.12.0-cdh5.2.0 (rexported) compiled Oct 11 2014, 15:46:46
+
+2014-11-21 07:18:31,943 [main] INFO  org.apache.pig.Main - Logging error messages to: /home/klimavia/pig_1416554311940.log
+
+2014-11-21 07:18:31,962 [main] INFO  org.apache.pig.impl.util.Utils - Default bootup file /home/klimavia/.pigbootup not found
+
+2014-11-21 07:18:32,173 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,173 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+
+2014-11-21 07:18:32,176 [main] INFO  org.apache.pig.backend.hadoop.executionengine.HExecutionEngine - Connecting to hadoop file system at: file:///
+
+2014-11-21 07:18:32,505 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,509 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,590 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,593 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,670 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,672 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,715 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,718 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,753 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,755 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,784 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,786 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,788 [main] WARN  org.apache.pig.PigServer - Empty string specified for jar path
+
+2014-11-21 07:18:32,812 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,814 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,840 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,842 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,868 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,870 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:32,897 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:32,899 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+grunt> A = load 'pig_inp.dat' using PigStorage(':');
+
+grunt> B = foreach A generate $0 as id;
+
+grunt> dump B;
+
+2014-11-21 07:18:41,362 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig features used in the script: UNKNOWN
+
+2014-11-21 07:18:41,408 [main] INFO  org.apache.pig.newplan.logical.optimizer.LogicalPlanOptimizer - {RULES_ENABLED=[AddForEach, ColumnMapKeyPrune, DuplicateForEachColumnRewrite, GroupByConstParallelSetter, ImplicitSplitInserter, LimitOptimizer, LoadTypeCastInserter, MergeFilter, MergeForEach, NewPartitionFilterOptimizer, PartitionFilterOptimizer, PushDownForEachFlatten, PushUpFilter, SplitFilter, StreamTypeCastInserter], RULES_DISABLED=[FilterLogicExpressionSimplifier]}
+
+2014-11-21 07:18:41,526 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MRCompiler - File concatenation threshold: 100 optimistic? false
+
+2014-11-21 07:18:41,552 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size before optimization: 1
+
+2014-11-21 07:18:41,552 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MultiQueryOptimizer - MR plan size after optimization: 1
+
+2014-11-21 07:18:41,581 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - session.id is deprecated. Instead, use dfs.metrics.session-id
+
+2014-11-21 07:18:41,581 [main] INFO  org.apache.hadoop.metrics.jvm.JvmMetrics - Initializing JVM Metrics with processName=JobTracker, sessionId=
+
+2014-11-21 07:18:41,614 [main] INFO  org.apache.pig.tools.pigstats.ScriptState - Pig script settings are added to the job
+
+2014-11-21 07:18:41,675 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.reduce.markreset.buffer.percent is deprecated. Instead, use mapreduce.reduce.markreset.buffer.percent
+
+2014-11-21 07:18:41,675 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - mapred.job.reduce.markreset.buffer.percent is not set, set to default 0.3
+
+2014-11-21 07:18:41,675 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.output.compress is deprecated. Instead, use mapreduce.output.fileoutputformat.compress
+
+2014-11-21 07:18:41,709 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.JobControlCompiler - Setting up single store job
+
+2014-11-21 07:18:41,716 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Key [pig.schematuple] is false, will not generate code.
+
+2014-11-21 07:18:41,716 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Starting process to move generated code to distributed cache
+
+2014-11-21 07:18:41,716 [main] INFO  org.apache.pig.data.SchemaTupleFrontend - Distributed cache not supported or needed in local mode. Setting key [pig.schematuple.local.dir] with code temp directory: /tmp/1416554321716-0
+
+2014-11-21 07:18:41,755 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 1 map-reduce job(s) waiting for submission.
+
+2014-11-21 07:18:41,756 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker.http.address is deprecated. Instead, use mapreduce.jobtracker.http.address
+
+2014-11-21 07:18:41,767 [JobControl] INFO  org.apache.hadoop.metrics.jvm.JvmMetrics - Cannot initialize JVM Metrics with processName=JobTracker, sessionId= - already initialized
+
+2014-11-21 07:18:42,003 [JobControl] WARN  org.apache.hadoop.mapreduce.JobSubmitter - No job jar file set.  User classes may not be found. See Job or Job#setJar(String).
+
+2014-11-21 07:18:42,057 [JobControl] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input paths to process : 1
+
+2014-11-21 07:18:42,057 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+
+2014-11-21 07:18:42,074 [JobControl] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths (combined) to process : 1
+
+2014-11-21 07:18:42,097 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - number of splits:1
+
+2014-11-21 07:18:42,106 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:42,110 [JobControl] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:42,280 [JobControl] INFO  org.apache.hadoop.mapreduce.JobSubmitter - Submitting tokens for job: job_local895494406_0001
+
+2014-11-21 07:18:42,310 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: hadoop.ssl.require.client.cert;  Ignoring.
+
+2014-11-21 07:18:42,311 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+
+2014-11-21 07:18:42,311 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: hadoop.ssl.client.conf;  Ignoring.
+
+2014-11-21 07:18:42,312 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: hadoop.ssl.keystores.factory.class;  Ignoring.
+
+2014-11-21 07:18:42,313 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: hadoop.ssl.server.conf;  Ignoring.
+
+2014-11-21 07:18:42,318 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/staging/klimavia895494406/.staging/job_local895494406_0001/job.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+
+2014-11-21 07:18:42,522 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: hadoop.ssl.require.client.cert;  Ignoring.
+
+2014-11-21 07:18:42,523 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.retry.interval;  Ignoring.
+
+2014-11-21 07:18:42,523 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: hadoop.ssl.client.conf;  Ignoring.
+
+2014-11-21 07:18:42,524 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: hadoop.ssl.keystores.factory.class;  Ignoring.
+
+2014-11-21 07:18:42,526 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: hadoop.ssl.server.conf;  Ignoring.
+
+2014-11-21 07:18:42,533 [JobControl] WARN  org.apache.hadoop.conf.Configuration - file:/tmp/hadoop-klimavia/mapred/local/localRunner/klimavia/job_local895494406_0001/job_local895494406_0001.xml:an attempt to override final parameter: mapreduce.job.end-notification.max.attempts;  Ignoring.
+
+2014-11-21 07:18:42,540 [JobControl] INFO  org.apache.hadoop.mapreduce.Job - The url to track the job: http://localhost:8080/
+
+2014-11-21 07:18:42,541 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - HadoopJobId: job_local895494406_0001
+
+2014-11-21 07:18:42,541 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Processing aliases A,B
+
+2014-11-21 07:18:42,541 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - detailed locations: M: A[1,4],B[2,4] C:  R:
+
+2014-11-21 07:18:42,543 [Thread-5] INFO  org.apache.hadoop.mapred.LocalJobRunner - OutputCommitter set in config null
+
+2014-11-21 07:18:42,546 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 0% complete
+
+2014-11-21 07:18:42,571 [Thread-5] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:42,571 [Thread-5] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.reduce.markreset.buffer.percent is deprecated. Instead, use mapreduce.reduce.markreset.buffer.percent
+
+2014-11-21 07:18:42,571 [Thread-5] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.job.tracker is deprecated. Instead, use mapreduce.jobtracker.address
+
+2014-11-21 07:18:42,571 [Thread-5] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:42,574 [Thread-5] INFO  org.apache.hadoop.mapred.LocalJobRunner - OutputCommitter is org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigOutputCommitter
+
+2014-11-21 07:18:42,610 [Thread-5] INFO  org.apache.hadoop.mapred.LocalJobRunner - Waiting for map tasks
+
+2014-11-21 07:18:42,611 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.LocalJobRunner - Starting task: attempt_local895494406_0001_m_000000_0
+
+2014-11-21 07:18:42,685 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.Task -  Using ResourceCalculatorProcessTree : [ ]
+
+2014-11-21 07:18:42,692 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.MapTask - Processing split: Number of splits :1
+
+Total Length = 34
+
+Input split[0]:
+
+   Length = 34
+
+  Locations:
+
+ 
+
+-----------------------
+
+ 
+
+2014-11-21 07:18:42,715 [LocalJobRunner Map Task Executor #0] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigRecordReader - Current split being processed file:/home/klimavia/pig_inp.dat:0+34
+
+2014-11-21 07:18:42,778 [LocalJobRunner Map Task Executor #0] INFO  org.apache.pig.data.SchemaTupleBackend - Key [pig.schematuple] was not set... will not generate code.
+
+2014-11-21 07:18:42,804 [LocalJobRunner Map Task Executor #0] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigMapOnly$Map - Aliases being processed per job phase (AliasName[line,offset]): M: A[1,4],B[2,4] C:  R:
+
+2014-11-21 07:18:42,824 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.LocalJobRunner -
+
+2014-11-21 07:18:42,824 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.Task - Task:attempt_local895494406_0001_m_000000_0 is done. And is in the process of committing
+
+2014-11-21 07:18:42,839 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.LocalJobRunner -
+
+2014-11-21 07:18:42,839 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.Task - Task attempt_local895494406_0001_m_000000_0 is allowed to commit now
+
+2014-11-21 07:18:42,842 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter - Saved output of task 'attempt_local895494406_0001_m_000000_0' to file:/tmp/temp-571480459/tmp495536219/_temporary/0/task_local895494406_0001_m_000000
+
+2014-11-21 07:18:42,843 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.LocalJobRunner - map
+
+2014-11-21 07:18:42,843 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.Task - Task 'attempt_local895494406_0001_m_000000_0' done.
+
+2014-11-21 07:18:42,843 [LocalJobRunner Map Task Executor #0] INFO  org.apache.hadoop.mapred.LocalJobRunner - Finishing task: attempt_local895494406_0001_m_000000_0
+
+2014-11-21 07:18:42,843 [Thread-5] INFO  org.apache.hadoop.mapred.LocalJobRunner - map task executor complete.
+
+2014-11-21 07:18:43,048 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.map.tasks is deprecated. Instead, use mapreduce.job.maps
+
+2014-11-21 07:18:43,049 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - mapred.reduce.tasks is deprecated. Instead, use mapreduce.job.reduces
+
+2014-11-21 07:18:43,049 [main] WARN  org.apache.pig.tools.pigstats.PigStatsUtil - Failed to get RunningJob for job job_local895494406_0001
+
+2014-11-21 07:18:43,052 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - 100% complete
+
+2014-11-21 07:18:43,052 [main] INFO  org.apache.pig.tools.pigstats.SimplePigStats - Detected Local mode. Stats reported below may be incomplete
+
+2014-11-21 07:18:43,054 [main] INFO  org.apache.pig.tools.pigstats.SimplePigStats - Script Statistics:
+
+ 
+
+HadoopVersion   PigVersion      UserId  StartedAt       FinishedAt      Features
+
+2.5.0-cdh5.2.0  0.12.0-cdh5.2.0 klimavia        2014-11-21 07:18:41     2014-11-21 07:18:43     UNKNOWN
+
+ 
+
+Success!
+
+ 
+
+Job Stats (time in seconds):
+
+JobId   Alias   Feature Outputs
+
+job_local895494406_0001 A,B     MAP_ONLY        file:/tmp/temp-571480459/tmp495536219,
+
+ 
+
+Input(s):
+
+Successfully read records from: "file:///home/klimavia/pig_inp.dat"
+
+ 
+
+Output(s):
+
+Successfully stored records in: "file:/tmp/temp-571480459/tmp495536219"
+
+ 
+
+Job DAG:
+
+job_local895494406_0001
+
+ 
+
+ 
+
+2014-11-21 07:18:43,054 [main] INFO  org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.MapReduceLauncher - Success!
+
+2014-11-21 07:18:43,057 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - io.bytes.per.checksum is deprecated. Instead, use dfs.bytes-per-checksum
+
+2014-11-21 07:18:43,057 [main] INFO  org.apache.hadoop.conf.Configuration.deprecation - fs.default.name is deprecated. Instead, use fs.defaultFS
+
+2014-11-21 07:18:43,057 [main] WARN  org.apache.pig.data.SchemaTupleBackend - SchemaTupleBackend has already been initialized
+
+2014-11-21 07:18:43,078 [main] INFO  org.apache.hadoop.mapreduce.lib.input.FileInputFormat - Total input paths to process : 1
+
+2014-11-21 07:18:43,078 [main] INFO  org.apache.pig.backend.hadoop.executionengine.util.MapRedUtil - Total input paths to process : 1
+
+(E20019546)
+
+(E20019548)
+
+G
+
+
+
+
+
+
+=========================================================================================================================================
+
+Flume
+
+Flume is a distributed, reliable and available service for efficiently collecting, aggregating and moving large amounts of log data.
+
+ 
+
+Verification Test
+
+Copy the following text below and save as flumeTest.conf on the server you are testing.
+
+*You must update <username> or change the directory path /home/<username>/testFile.log to the path where you will be saving the file.  
+
+agent.sources = tail
+agent.channels = memoryChannel
+agent.sinks = loggerSink
+agent.sources.tail.type = exec
+agent.sources.tail.command = tail -f /home/<username>/testFile.log
+agent.sources.tail.channels = memoryChannel
+agent.sinks.loggerSink.channel = memoryChannel
+agent.sinks.loggerSink.type = logger
+agent.channels.memoryChannel.type = memory
+agent.channels.memoryChannel.capacity = 100
+ 
+
+Copy the below and save as testFile.log in the same directory.
+
+Log test line 1
+Log test line 2
+
+
+Start the Flume Agent to output to the console by running the following command:
+
+*You must update <username> or change the directory path to match the locations you save the two files earlier.
+
+flume-ng agent --conf-file /home/nathalok/flumeTest.conf --name agent -Dflume.root.logger=DEBUG,console
+
+
+Once you are connected you should see the two lines above as the last events.
+
+Open a new terminal and change the directory to the same as above. Run the below command:
+
+ echo Log test line 3 >> testFile.log
+
+In the terminal where the Flume Agent is running, you should see a new event with the new test line. You can repeat the above step a few 
+times to add more lines but once connection has been successful and new events are picked up, Flume is working correctly.
+
+
+eg.2
+----
+This document assumes that you have Hadoop installed and running locally, with flume-ng version 1.2.0 or above.
+
+In this example, the name of our agent is just agent. First, let’s define a channel for agent named memory-channel of type memory.
+
+# Define a memory channel on agent called memory-channel.
+agent.channels.memory-channel.type = memory
+
+Next, let’s configure a source for agent, called tail-source, which watches the system.log file. Let us also assign it to the memory-channel.
+
+# Define a source on agent and connect to channel memory-channel.
+agent.sources.tail-source.type = exec
+agent.sources.tail-source.command = tail -F /var/log/system.log
+agent.sources.tail-source.channels = memory-channel
+
+Now, configure two sinks: logger and HDFS. Then, we specify the path to the name node for HDFS, pointing to the output path of where we want the files stored.
+
+# Define a sink that outputs to logger.
+agent.sinks.log-sink.channel = memory-channel
+agent.sinks.log-sink.type = logger
+
+# Define a sink that outputs to hdfs.
+agent.sinks.hdfs-sink.channel = memory-channel
+agent.sinks.hdfs-sink.type = hdfs
+agent.sinks.hdfs-sink.hdfs.path = hdfs://localhost:54310/tmp/system.log/
+agent.sinks.hdfs-sink.hdfs.fileType = DataStream
+
+Then, we configure the agent’s channels, sources and sinks.
+
+# Finally, activate.
+agent.channels = memory-channel
+agent.sources = tail-source
+agent.sinks = log-sink hdfs-sink
+
+Finally, let’s start the flume agent, logging all output to the console, and starting agent agent.
+
+# Run flume-ng, with log messages to the console.
+$ bin/flume-ng agent --conf ./conf/ -f conf/flume.conf \
+    -Dflume.root.logger=DEBUG,console -n agent
+
+Finally, you should see output like this as data is written to the filesystem.
+
+2013-06-18 14:00:49,784 (hdfs-hdfs-sink-call-runner-0) [INFO - org.apache.flume.sink.hdfs.BucketWriter.doOpen(BucketWriter.java:189)] Creating hdfs://localhost:54310/tmp/system.log//FlumeData.1371589249458.tmp
+
+Success!
+
+
+
+==========================================================================================================================================
+
+Oozie 
+This tool is a workflow scheduler system to manage Apache Hadoop jobs.
+ 
+Verification Test 
+Open HUE within a browser and login.
+ 
+Within the Workflows list, select the Workflows option within Editors.
+Workflows Option
+ 
+Select Create.
+Oozie Create
+ 
+Give your Oozie workflow a relevant name and description.
+ 
+Drag the Fs tool between the Start and End points to place this in the workflow.
+ 
+Give the Fs step a name and description.
+ 
+Click Add Path on the Create Directory option.
+ 
+Add in the directory (replacing <username> with your username and <test_folder_name> with a relevant name for testing): /user/<username>/<test_folder_name>
+ 
+Oozie FS.png
+You should have a form looking like above. Click the Done button at the bottom of the screen.
+ 
+
+Click the Submit button to execute the workflow.
+
+You will receive a status bar. Once this has completed, you can view your job within the workflow dashboard.
+
+ 
+
+To verify this worked: Select the File Browser and check to see if the folder has been created. If so, Oozie has successfully scheduled and ran a workflow.
+
+Delete the create folder after testing is complete.
+
+==============================================================================================================================================
+Spark
+Apache Spark is a fast, general engine for large-scale data processing on a cluster.
+  
+Verification Test 
+ 
+Copy the below text and save as testTable.txt on the server you are verifying.
+ 
+User1,100,UK
+User2,250,UK
+User3,650,USA
+User4,400,USA
+User5,150,UK
+ 
+Open Scala Spark Shell by running this command in a terminal or Putty:
+spark-shell
+ 
+Read the file and define an RDD:
+val testData = sc.textFile("file:/home/nathalok/student.txt")
+ 
+Run the command to verify the 5 records have been read.
+testData.count()
+ 
+Further test functionality by filtering so only UK users as returned:
+val testFilter =testData.filter(line => line.contains("luke"))
+ 
+ 
+Show the UK users for confirmation:
+testFilter.collect()
+
+eg2.
+Please try to execute spark in this way. I tried and got results:
+
+1.copy file “student.txt” onto the HDFS
+2.execute from command line: spark-shell --master yarn
+3. scala> val testData = sc.textFile("/dev/nathalok/student.txt")
+14/11/20 21:01:07 INFO MemoryStore: ensureFreeSpace(274424) called with curMem=0, maxMem=278302556
+14/11/20 21:01:07 INFO MemoryStore: Block broadcast_0 stored as values in memory (estimated size 268.0 KB, free 265.1 MB)
+14/11/20 21:01:07 INFO MemoryStore: ensureFreeSpace(21606) called with curMem=274424, maxMem=278302556
+14/11/20 21:01:07 INFO MemoryStore: Block broadcast_0_piece0 stored as bytes in memory (estimated size 21.1 KB, free 265.1 MB)
+14/11/20 21:01:07 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on tbrder000002188.intranet.comcapint.com:33259 (size: 21.1 KB, free: 265.4 MB)
+14/11/20 21:01:07 INFO BlockManagerMaster: Updated info of block broadcast_0_piece0
+testData: org.apache.spark.rdd.RDD[String] = /dev/nathalok/student.txt MappedRDD[1] at textFile at <console>:12
+
+
+4. scala> testData.count()
+14/11/20 21:01:27 INFO FileInputFormat: Total input paths to process : 1
+14/11/20 21:01:27 INFO SparkContext: Starting job: count at <console>:15
+14/11/20 21:01:27 INFO DAGScheduler: Got job 0 (count at <console>:15) with 2 output partitions (allowLocal=false)
+14/11/20 21:01:27 INFO DAGScheduler: Final stage: Stage 0(count at <console>:15)
+14/11/20 21:01:27 INFO DAGScheduler: Parents of final stage: List()
+14/11/20 21:01:27 INFO DAGScheduler: Missing parents: List()
+14/11/20 21:01:27 INFO DAGScheduler: Submitting Stage 0 (/dev/nathalok/student.txt MappedRDD[1] at textFile at <console>:12), which has no missing parents
+14/11/20 21:01:27 INFO MemoryStore: ensureFreeSpace(2400) called with curMem=296030, maxMem=278302556
+14/11/20 21:01:27 INFO MemoryStore: Block broadcast_1 stored as values in memory (estimated size 2.3 KB, free 265.1 MB)
+14/11/20 21:01:27 INFO MemoryStore: ensureFreeSpace(1537) called with curMem=298430, maxMem=278302556
+14/11/20 21:01:27 INFO MemoryStore: Block broadcast_1_piece0 stored as bytes in memory (estimated size 1537.0 B, free 265.1 MB)
+14/11/20 21:01:27 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on tbrder000002188.intranet.comcapint.com:33259 (size: 1537.0 B, free: 265.4 MB)
+14/11/20 21:01:27 INFO BlockManagerMaster: Updated info of block broadcast_1_piece0
+14/11/20 21:01:27 INFO DAGScheduler: Submitting 2 missing tasks from Stage 0 (/dev/nathalok/student.txt MappedRDD[1] at textFile at <console>:12)
+14/11/20 21:01:27 INFO YarnClientClusterScheduler: Adding task set 0.0 with 2 tasks
+14/11/20 21:01:27 INFO RackResolver: Resolved tbrder10465.intranet.comcapint.com to /default
+14/11/20 21:01:27 INFO RackResolver: Resolved tbrder10469.intranet.comcapint.com to /default
+14/11/20 21:01:27 INFO TaskSetManager: Starting task 0.0 in stage 0.0 (TID 0, tbrder10464.intranet.comcapint.com, NODE_LOCAL, 1196 bytes)
+14/11/20 21:01:27 INFO ConnectionManager: Accepted connection from [tbrder10464.intranet.comcapint.com/22.113.240.165:32824]
+14/11/20 21:01:27 INFO SendingConnection: Initiating connection to [tbrder10464.intranet.comcapint.com/22.113.240.165:42648]
+14/11/20 21:01:27 INFO SendingConnection: Connected to [tbrder10464.intranet.comcapint.com/22.113.240.165:42648], 1 messages pending
+14/11/20 21:01:27 INFO BlockManagerInfo: Added broadcast_1_piece0 in memory on tbrder10464.intranet.comcapint.com:42648 (size: 1537.0 B, free: 530.3 MB)
+14/11/20 21:01:27 INFO BlockManagerInfo: Added broadcast_0_piece0 in memory on tbrder10464.intranet.comcapint.com:42648 (size: 21.1 KB, free: 530.3 MB)
+14/11/20 21:01:29 INFO TaskSetManager: Starting task 1.0 in stage 0.0 (TID 1, tbrder10464.intranet.comcapint.com, NODE_LOCAL, 1196 bytes)
+14/11/20 21:01:29 INFO TaskSetManager: Finished task 0.0 in stage 0.0 (TID 0) in 1755 ms on tbrder10464.intranet.comcapint.com (1/2)
+14/11/20 21:01:29 INFO TaskSetManager: Finished task 1.0 in stage 0.0 (TID 1) in 33 ms on tbrder10464.intranet.comcapint.com (2/2)
+14/11/20 21:01:29 INFO DAGScheduler: Stage 0 (count at <console>:15) finished in 1.783 s
+14/11/20 21:01:29 INFO YarnClientClusterScheduler: Removed TaskSet 0.0, whose tasks have all completed, from pool
+14/11/20 21:01:29 INFO SparkContext: Job finished: count at <console>:15, took 1.911242352 s
+res0: Long = 5
+
+
+5. scala> val testFilter =testData.filter(line => line.contains("UK"))
+14/11/20 21:01:52 INFO BlockManager: Removing broadcast 1
+14/11/20 21:01:52 INFO BlockManager: Removing block broadcast_1_piece0
+14/11/20 21:01:52 INFO MemoryStore: Block broadcast_1_piece0 of size 1537 dropped from memory (free 278004126)
+14/11/20 21:01:52 INFO BlockManagerInfo: Removed broadcast_1_piece0 on tbrder000002188.intranet.comcapint.com:33259 in memory (size: 1537.0 B, free: 265.4 MB)
+14/11/20 21:01:52 INFO BlockManagerMaster: Updated info of block broadcast_1_piece0
+14/11/20 21:01:52 INFO BlockManager: Removing block broadcast_1
+14/11/20 21:01:52 INFO MemoryStore: Block broadcast_1 of size 2400 dropped from memory (free 278006526)
+14/11/20 21:01:52 INFO BlockManagerInfo: Removed broadcast_1_piece0 on tbrder10464.intranet.comcapint.com:42648 in memory (size: 1537.0 B, free: 530.3 MB)
+14/11/20 21:01:52 INFO ContextCleaner: Cleaned broadcast 1
+testFilter: org.apache.spark.rdd.RDD[String] = FilteredRDD[2] at filter at <console>:14
+
+
+6. scala> testFilter.collect()
+14/11/20 21:02:13 INFO SparkContext: Starting job: collect at <console>:17
+14/11/20 21:02:13 INFO DAGScheduler: Got job 1 (collect at <console>:17) with 2 output partitions (allowLocal=false)
+14/11/20 21:02:13 INFO DAGScheduler: Final stage: Stage 1(collect at <console>:17)
+14/11/20 21:02:13 INFO DAGScheduler: Parents of final stage: List()
+14/11/20 21:02:13 INFO DAGScheduler: Missing parents: List()
+14/11/20 21:02:13 INFO DAGScheduler: Submitting Stage 1 (FilteredRDD[2] at filter at <console>:14), which has no missing parents
+14/11/20 21:02:13 INFO MemoryStore: ensureFreeSpace(2616) called with curMem=296030, maxMem=278302556
+14/11/20 21:02:13 INFO MemoryStore: Block broadcast_2 stored as values in memory (estimated size 2.6 KB, free 265.1 MB)
+14/11/20 21:02:13 INFO MemoryStore: ensureFreeSpace(1662) called with curMem=298646, maxMem=278302556
+14/11/20 21:02:13 INFO MemoryStore: Block broadcast_2_piece0 stored as bytes in memory (estimated size 1662.0 B, free 265.1 MB)
+14/11/20 21:02:13 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on tbrder000002188.intranet.comcapint.com:33259 (size: 1662.0 B, free: 265.4 MB)
+14/11/20 21:02:13 INFO BlockManagerMaster: Updated info of block broadcast_2_piece0
+14/11/20 21:02:13 INFO DAGScheduler: Submitting 2 missing tasks from Stage 1 (FilteredRDD[2] at filter at <console>:14)
+14/11/20 21:02:13 INFO YarnClientClusterScheduler: Adding task set 1.0 with 2 tasks
+14/11/20 21:02:13 INFO TaskSetManager: Starting task 0.0 in stage 1.0 (TID 2, tbrder10464.intranet.comcapint.com, NODE_LOCAL, 1196 bytes)
+14/11/20 21:02:13 INFO BlockManagerInfo: Added broadcast_2_piece0 in memory on tbrder10464.intranet.comcapint.com:42648 (size: 1662.0 B, free: 530.3 MB)
+14/11/20 21:02:13 INFO TaskSetManager: Starting task 1.0 in stage 1.0 (TID 3, tbrder10464.intranet.comcapint.com, NODE_LOCAL, 1196 bytes)
+14/11/20 21:02:13 INFO TaskSetManager: Finished task 0.0 in stage 1.0 (TID 2) in 149 ms on tbrder10464.intranet.comcapint.com (1/2)
+14/11/20 21:02:13 INFO DAGScheduler: Stage 1 (collect at <console>:17) finished in 0.180 s
+14/11/20 21:02:13 INFO SparkContext: Job finished: collect at <console>:17, took 0.188583649 s
+14/11/20 21:02:13 INFO TaskSetManager: Finished task 1.0 in stage 1.0 (TID 3) in 32 ms on tbrder10464.intranet.comcapint.com (2/2)
+14/11/20 21:02:13 INFO YarnClientClusterScheduler: Removed TaskSet 1.0, whose tasks have all completed, from pool
+res1: Array[String] = Array(User1,100,UK, User2,250,UK, User5,150,UK)
+
+
+
+
+
+=============================================================================================================================================
+
+Teradata Connector for Hadoop (TDCH)
+
+The Teradata Connector for Hadoop allows you to import tables from Teradata to Hive and export from Hive to Teradata. 
+When using TDCH in PuTTY, first we include the dependencies (this creates the paths to the required folders):
+export HADOOP_HOME=/opt/cloudera/parcels/CDH/lib/hadoop
+export HIVE_HOME=/opt/cloudera/parcels/CDH/lib/hive
+export HCAT_HOME=/opt/cloudera/parcels/CDH/lib/hcatalog/share/hcatalog
+export LIB_JARS=$HCAT_HOME/hcatalog-core-0.5.0-cdh4.6.0.jar,$HIVE_HOME/lib/hive-metastore-0.10.0-cdh4.6.0.jar,$HIVE_HOME/lib/libthrift-0.9.0-cdh4-1.jar,$HIVE_HOME/lib/hive-exec-0.10.0-cdh4.6.0.jar,$HIVE_HOME/lib/libfb303-0.9.0.jar,$HIVE_HOME/lib/jdo2-api-2.3-ec.jar,$HIVE_HOME/lib/slf4j-api-1.6.4.jar,$HIVE_HOME/lib/hive-cli-0.10.0-cdh4.6.0.jar,$HIVE_HOME/lib/hive-builtins-0.10.0-cdh4.6.0.jar,/usr/lib/hadoop/lib/teradata-connector-1.2.1.jar,/hdfs/tmp/ankit/terajdbc4.jar
+export HADOOP_CLASSPATH=$HCAT_HOME/share/hcatalog/hcatalog-core-0.5.0-cdh4.6.0.jar:$HIVE_HOME/lib/hive-metastore-0.10.0-cdh4.6.0.jar:$HIVE_HOME/lib/libthrift-0.9.0-cdh4-1.jar:$HIVE_HOME/lib/hive-exec-0.10.0-cdh4.6.0.jar:$HIVE_HOME/lib/libfb303-0.9.0.jar:$HIVE_HOME/lib/jdo2-api-2.3-ec.jar:$HIVE_HOME/conf:$HADOOP_HOME/conf:$HIVE_HOME/lib/slf4j-api-1.6.4.jar:$HIVE_HOME/lib/antlr-runtime-3.4.jar:$HIVE_HOME/lib/datanucleus-core-3.2.2.jar:$HIVE_HOME/lib/datanucleus-rdbms-3.2.1.jar:$HIVE_HOME/lib/commons-dbcp-1.4.jar:$HIVE_HOME/lib/commons-pool-1.5.4.jar:$HIVE_HOME/lib/hive-cli-0.10.0-cdh4.6.0.jar:$HIVE_HOME/lib/hive-builtins-0.10.0-cdh4.6.0.jar:/usr/lib/hadoop/lib/teradata-connector-1.2.1.jar:/hdfs/tmp/ankit/terajdbc4.jar:/hdfs/tmp/ankit/tdgssconfig.jar:/
+
+Import table from Teradata to Hadoop
+1. First include the dependencies by running the export commands at the beginning of this section.
+2. Use this example of an import command substituting your credentials and table details for the <> brackets:
+hadoop com.teradata.hadoop.tool.TeradataImportTool -libjars $LIB_JARS -url jdbc:teradata://dwsana.dws.companys.co.uk/database=<TD database name> -username <username> -password <password> -classname com.teradata.jdbc.TeraDriver -fileformat textfile -jobtype hdfs -method split.by.hash -sourcetable <TD table name> -nummappers 40 -targetpaths <hdfs path> 
+Export table from Hadoop to Teradata (with fast load)
+1. First include the dependencies by running the export commands at the beginning of this section.
+2. Use this example of an import command substituting your credentials and table details for the <> brackets:
+hadoop com.teradata.hadoop.tool.TeradataExportTool -libjars $LIB_JARS -url jdbc:teradata://dwsana.dws.companys.co.uk/database=<TD database name> -username <username> -password <password> -classname com.teradata.jdbc.TeraDriver -fileformat textfile -jobtype hive -method internal.fastload -sourcedatabase <hive database name> -sourcetable <hive table name> -nummappers 20 -targettable <TD table name>
+Export table from Hadoop to Teradata (selected columns)
+1. First include the dependencies by running the export commands at the beginning of this section.
+2. Use this example of an import command substituting your credentials and table details for the <> brackets:
+hadoop com.teradata.hadoop.tool.TeradataExportTool -libjars $LIB_JARS -url jdbc:teradata://dwsana.dws.companys.co.uk/database=<TD database name> -username <username> -password <password> -classname com.teradata.jdbc.Terriver -fileformat textfile -jobtype hive -sourcedatabase <hive database name> -sourcetable <hive table name> -nummapper 40 -sourcefieldnames <hive table column names e.g. 'col1,col2'> -targetfieldnames <TD table column names e.g. 'col1,col2'> -targettable <TD table name>
+
+=============================================================================================================================================
+
+Load the file to a node in the Hadoop cluster
+
+1.	This is a standard FTP transfer. Here we will use psftp.exe, the PuTTY SFTP client, a tool used to transfer files securely between computers using an SSH connection. It can be downloaded for free from the following location, no installation required:
+http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+2.	To connect to the dev server type:
+open grbdwhd0017
+3. Input your username and password when prompted
+4. Make a folder to upload files to and navigate to it: mkdir <Folder Path> 
+cd <Folder Path>
+5. Upload file from windows filepath using the “put” command:
+put <File path on local PC>
+6. Check file is uploaded:
+ls <Folder Path>
+
+===============================================================================================================================================
+
+Copy from local to HDFS
+
+1. Open a session on putty.exe (also available from link above).
+2. For connection guidasnce, see “Connecting to Hadoop using PuTTY”
+3. Create a folder on HDFS to load the file into. In this example we will load the data into an existing Hive database:
+hadoop fs -mkdir /user/hive/warehouse/<DatabaseName>/<TableName>
+4. Copy data from local node to HDFS using the copyFromLocal command:
+hadoop fs -copyFromLocal <File location on local node> <Folder on HDFS>
+
+=============================================================================================================================================
+
+HDFS Blackbox path for end user
+
+-bash-4.1$ hadoop fs -ls /user/nathalok
+Found 4 items
+drwxr-xr-x   - nathalok nathalok          0 2014-11-03 07:48 /user/nathalok/.Trash
+drwx------   - nathalok nathalok          0 2014-11-03 11:31 /user/nathalok/.staging
+-rwxrwxrwx   3 nathalok nathalok       6253 2014-10-22 08:56 /user/nathalok/hive1.txt
+-rw-r--r--   3 nathalok nathalok         41 2014-11-03 11:30 /user/nathalok/student.txt
+-bash-4.1$ cd fs -ls /DEV/
+-bash: cd: fs: No such file or directory
+-bash-4.1$ hadoop fs -ls /DEV
+-bash-4.1$ hadoop fs -ls /DEV/
+-bash-4.1$ hadoop fs -ls /dev/
+Found 3 items
+drwxr-xr-x   - nathalok fGLBHDPDEVLPR          0 2014-11-03 09:25 /dev/nathalok
+drwxr-xr-x   - sethinir fGLBHDPDEVLPR          0 2014-11-03 11:39 /dev/nirakar
+drwxrwxrwx   - deorerup fGLBHDPDEVLPR          0 2014-11-03 09:35 /dev/rupesh
+-bash-4.1$
+
+
+=============================================================================================================================================
+Solr
+/usr/bin/solrctl --zk 'tbrder10469.intranet.comcapint.com:2181,tbrder10471.intranet.comcapint.com:2181,tbrder10470.intranet.comcapint.com:2181/solr' --solr 'http://tbrder10470.intranet.comcapint.com:8983/solr/' instancedir --generate /home/nathalok/test1
+solrctl --zk 'tbrder10469.intranet.comcapint.com:2181,tbrder10471.intranet.comcapint.com:2181,tbrder10470.intranet.comcapint.com:2181/solr' --solr 'http://tbrder10470.intranet.comcapint.com:8983/solr/' instancedir --create sample_test_dev /home/nathalok/test1
+solrctl --zk 'tbrder10469.intranet.comcapint.com:2181,tbrder10471.intranet.comcapint.com:2181,tbrder10470.intranet.comcapint.com:2181/solr' --solr 'http://tbrder10470.intranet.comcapint.com:8983/solr/' collection --create sample_test_dev -s 1 -r 1
+create index and view in grid
+http://tbrder10470.intranet.comcapint.com:8983/solr/#/
+http://solr.pl/en/2011/04/04/indexing-files-like-doc-pdf-solr-and-tika-integration/
+http://solr.pl/en/2011/03/21/solr-and-tika-integration-part-1-basics/
+http://pixedin.blogspot.co.uk/2012/05/howto-solr-building-custom-search.html
+http://solrcli.readthedocs.org/en/latest/userguide/userguide.html#execution ===== solr cli
+http://www.solrtutorial.com/solr-in-5-minutes.html
+http://cdn.oreillystatic.com/en/assets/1/event/61/Solr%20Application%20Development%20Tutorial%20Presentation.pdf
+
+
+=============================================================================================================================================
+ZooKeeper 
+
+ZooKeeper is a centralised service for maintaining configuration information, naming, providing distributed synchronisation and providing group services.
+
+Verification Test
+
+You can view the ZooKeeper browser via HUE to see the current roles of the master nodes. From the Data Browsers drop down list click ZooKeeper.
+
+To get further information on the data sent, received and jobs queuing; open each node by clicking the relevant link.
+
+Check the status of each node by running the status command in a terminal:
+
+echo status | nc tbrder10469.intranet.comcapint.com 2181
+echo status | nc tbrder10470.intranet.comcapint.com 2181
+echo status | nc tbrder10471.intranet.comcapint.com 2181
+ 
+This will display the current version of ZooKeeper, clients, sent and received data, number of connections and mode of node.
+ 
+The above checks give us reassurance that the services are up and running. For a full test, we would need to force the Leader node to fail. When this occurs, ZooKeeper should reassign the leader mode to one of the nodes that were in the mode follower at time of failure.
+============================================================================================================================================================================================
+Job Designer
+The Job Designer application enables you to create and submit jobs to the Hadoop Cluster.
+ 
+Verification Test
+Open Job Designer via HUE by selecting Job Designer within the Query Editors drop down menu.
+
+Select New Action and choose Fs from the list.
+Give the Action a relevant name and description.
+
+Select Add Path for the Create Directory option.
+
+Add in the directory (replacing <username> with your username and <test_folder_name> with a relevant name for testing): /user/<username>/<test_folder_name>
+
+You should have a form looking like above. Click the Save button at the bottom of the screen.
+
+The Job has now been saved. Reopen the created job and click the Submit button to execute the workflow.
+
+To verify this worked: Select the File Browser and check to see if the folder has been created. If so, Job Designer has successfully setup and ran a job.
+ 
+Delete the create folder after testing is complete.
+
+=============================================================================================================================================
+Metastore
+The Metastore holds the structure/schema (Metadata) for each table and HDFS stores the actual data.
+ 
+Verification Test
+To verify the Metastore is up and running, you can simply open HUE and within Data Browsers select the option Metastore Tables.
+ 
+Select a Database from the drop-down list.
+ 
+Select a table and a column description table should show. The Names and Types of columns have successfully been retrieved from the Metastore.
+ 
+To confirm the Metastore is connected to the data, select the Sample tab to view some data.
+ 
+Alternatively, within Hive you can use the describe key word to retrieve Metadata about a table.
+ 
+Example:
+DESCRIBE testdb_dev.foo;
+ 
+If Hive is able to retrieve the column definitions, then a connection to the Metastore has been succssful.
+=============================================================================================================================================
+Mahout
+http://girlincomputerscience.blogspot.co.uk/2010/11/apache-mahout.html
+mahout clusterdump --input /user/nathalok/hive1.txt  --output a1.txt
+
+export MAHOUT_HOME=/apps/cloudera/parcels/CDH-5.2.0-1.cdh5.2.0.p0.36/bin (not mandatory )
+    
+MAHOUT_LOCAL=/etc/alternatives/mahout-conf (not mandatory)
+
+-bash-4.1$ mahout cat /home/nathalok/mydata.dat
+MAHOUT_LOCAL is not set; adding HADOOP_CONF_DIR to classpath.
+Running on hadoop, using /apps/cloudera/parcels/CDH-5.2.0-1.cdh5.2.0.p0.36/lib/hadoop/bin/hadoop and HADOOP_CONF_DIR=/etc/hadoop/conf
+MAHOUT-JOB: /apps/cloudera/parcels/CDH-5.2.0-1.cdh5.2.0.p0.36/lib/mahout/mahout-examples-0.9-cdh5.2.0-job.jar
+14/11/13 08:29:07 WARN driver.MahoutDriver: No cat.props found on classpath, will use command-line arguments only
+1,101,5.0
+1,102,3.0
+1,103,2.5
+2,101,2.0
+2,102,2.5
+2,103,5.0
+2,104,2.0
+3,101,2.5
+3,104,4.0
+3,105,4.5
+3,107,5.0
+4,101,5.0
+4,103,3.0
+4,104,4.5
+4,106,4.0
+5,101,4.0
+5,102,3.0
+5,103,2.0
+5,104,4.0
+5,105,3.5
+5,106,4.0
+14/11/13 08:29:07 INFO driver.MahoutDriver: Program took 2 ms (Minutes: 3.3333333333333335E-5)
+-bash-4.1$
+====================================================================================================================================================
+Cloudera Manager
+http://tbrder10470.intranet.comcapint.com:7180/cmf/login
+login with same credentials
+
+Cloudera Navigator 
+http://tbrder10471.intranet.comcapint.com:7187
+
+==========================================================
+bteq load:
+.IMPORT VARTEXT ',' FILE = sample_alok.txt
+.QUIET ON
+.REPEAT *
+USING id (VARCHAR(11)), name (VARCHAR(40)) INSERT INTO TS_72258_BASELDB.sample_alok VALUES ( :id, :name);
+.QUIT
+
+ODBC connction from other domain:
+
+Download and install MIT Kerberos for Windows 4.0.1 
+1. For 64-bit computers: http://web.mit.edu/kerberos/dist/kfw/4.0/kfw-4.0.1-amd64.msi. The installer includes both 32-bit and 64-bit libraries. 
+2. For 32-bit computers: http://web.mit.edu/kerberos/dist/kfw/4.0/kfw-4.0.1-i386.msi. The installer includes 32-bit libraries only. 
+
+Add the domain and details and then in ODBC create a connection for Hive/Impala
+for Hive:
+=================================================================================================================
+GIT:
+Some Git training:
+http://pcottle.github.io/learnGitBranching/index.html
+** Git can take some getting used to, please try some of the above course to gain an understanding of how Git works. **
+
+Our Git SharePoint:
+http://community.companys.intranet/sites/cbbcem/SitePages/GiT.aspx
+
+The book ‘Pro Git’, available free online:-
+http://git-scm.com/book
+
+Document explaining WINDOWS access to Git (I will send Linux info later)
+Version Control with GIT on Windows via TortoiseGit
